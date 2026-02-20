@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
         responseDropZone: document.getElementById('response-drop-zone'),
         answerDropZone: document.getElementById('answer-drop-zone'),
         calculateBtn: document.getElementById('calculate-btn'),
+        demoBtn: document.getElementById('demo-btn'),
         uploadSection: document.getElementById('upload-section'),
         dashboardSection: document.getElementById('dashboard-section'),
         totalScore: document.getElementById('total-score'),
@@ -25,8 +26,42 @@ document.addEventListener('DOMContentLoaded', () => {
         scoreChemistry: document.getElementById('score-chemistry'),
         scoreBiology: document.getElementById('score-biology'),
         analysisBody: document.getElementById('analysis-body'),
-        reUploadBtn: document.getElementById('re-upload')
+        reUploadBtn: document.getElementById('re-upload'),
+        navItems: document.querySelectorAll('.nav-item')
     };
+
+    // Navigation Logic
+    elements.navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = item.id;
+
+            // Update active state
+            elements.navItems.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+
+            // Toggle sections
+            if (targetId === 'nav-upload') {
+                elements.uploadSection.classList.remove('hidden');
+                elements.dashboardSection.classList.add('hidden');
+            } else if (targetId === 'nav-dashboard' || targetId === 'nav-analysis') {
+                if (state.results) {
+                    elements.uploadSection.classList.add('hidden');
+                    elements.dashboardSection.classList.remove('hidden');
+
+                    // If analysis, scroll to it
+                    if (targetId === 'nav-analysis') {
+                        document.querySelector('.analysis-table-container').scrollIntoView({ behavior: 'smooth' });
+                    }
+                } else {
+                    alert('Please upload your data or use demo data first!');
+                    // Revert active state to upload if no data
+                    elements.navItems.forEach(i => i.classList.remove('active'));
+                    document.getElementById('nav-upload').classList.add('active');
+                }
+            }
+        });
+    });
 
     // Initialize Drop Zones
     [
@@ -190,6 +225,10 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.uploadSection.classList.add('hidden');
         elements.dashboardSection.classList.remove('hidden');
 
+        // Update nav state
+        elements.navItems.forEach(i => i.classList.remove('active'));
+        document.getElementById('nav-dashboard').classList.add('active');
+
         // Update Score
         animateValue(elements.totalScore, 0, state.results.total, 1000);
 
@@ -276,12 +315,8 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('theme', 'dark');
     }
 
-    // Add Demo Data Button for WOW factor
-    const demoBtn = document.createElement('button');
-    demoBtn.innerText = "Load Demo Data";
-    demoBtn.className = "btn-secondary";
-    demoBtn.style.marginTop = "1rem";
-    demoBtn.onclick = () => {
+    // Demo Data Button Handler
+    elements.demoBtn.onclick = () => {
         const dummyKey = new Map();
         const dummyResp = new Map();
         const choices = ['A', 'B', 'C', 'D'];
@@ -290,9 +325,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const correct = choices[Math.floor(Math.random() * 4)];
             dummyKey.set(i, correct);
 
-            // Randomly answer
-            if (Math.random() > 0.1) { // 90% attempted
-                if (Math.random() > 0.2) { // 80% correct
+            if (Math.random() > 0.1) {
+                if (Math.random() > 0.2) {
                     dummyResp.set(i, correct);
                 } else {
                     dummyResp.set(i, choices[Math.floor(Math.random() * 4)]);
@@ -306,5 +340,4 @@ document.addEventListener('DOMContentLoaded', () => {
         calculateScore();
         showDashboard();
     };
-    elements.uploadSection.appendChild(demoBtn);
 });

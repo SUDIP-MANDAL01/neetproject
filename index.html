@@ -27,16 +27,15 @@
                 <h1>NEET Score Checker</h1>
             </div>
             <nav>
-                <a href="#" class="nav-item active" id="nav-dashboard">
+                <a href="#" class="nav-item" id="nav-dashboard">
                     <span class="icon">📊</span> Dashboard
                 </a>
-                <a href="#" class="nav-item" id="nav-upload">
+                <a href="#" class="nav-item active" id="nav-upload">
                     <span class="icon">📁</span> Upload Data
                 </a>
                 <a href="#" class="nav-item" id="nav-analysis">
                     <span class="icon">🔬</span> Analysis
                 </a>
-
             </nav>
             <div class="sidebar-footer">
                 <div class="user-profile">
@@ -61,7 +60,7 @@
                     <div class="upload-card glass">
                         <div class="icon-box">📄</div>
                         <h3>Response Card</h3>
-                        <p>Upload your OMR response sheet (JPG, PDF, CSV or Text)</p>
+                        <p>Upload your OMR response sheet (JPG, JPEG, PDF, CSV or Text)</p>
                         <div class="drop-zone" id="response-drop-zone">
                             <span>Drop file or click to browse</span>
                             <input type="file" id="response-input" accept=".csv,.txt,.jpg,.jpeg,.pdf" hidden>
@@ -70,19 +69,23 @@
                     <div class="upload-card glass">
                         <div class="icon-box">🔑</div>
                         <h3>Answer Key</h3>
-                        <p>Upload the official answer key (JPG, PDF, CSV or Text)</p>
+                        <p>Upload the official answer key (JPG, JPEG, PDF, CSV or Text)</p>
                         <div class="drop-zone" id="answer-drop-zone">
                             <span>Drop file or click to browse</span>
                             <input type="file" id="answer-input" accept=".csv,.txt,.jpg,.jpeg,.pdf" hidden>
                         </div>
                     </div>
                 </div>
-                <button id="calculate-btn" class="btn-primary" disabled>Calculate Score</button>
+
+                <div class="upload-actions">
+                    <button id="calculate-btn" class="btn-primary" disabled>Calculate Score</button>
+                    <button id="demo-btn" class="btn-secondary">Try with Demo Data</button>
+                </div>
+
                 <div class="format-hint">
-                    <p><strong>Note:</strong> We now support automatic OCR for <strong>JPG</strong> and
-                        <strong>PDF</strong> files!
-                        Alternatively, use CSV format with columns: <code>Question No, Answer</code>
-                    </p>
+                    <p><strong>Note:</strong> We now support automatic OCR for <strong>JPG/JPEG</strong> and
+                        <strong>PDF</strong> files! Alternatively, use CSV format with columns:
+                        <code>Question No, Answer</code></p>
                 </div>
             </section>
 
