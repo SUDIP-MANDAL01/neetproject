@@ -29,7 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
         reUploadBtn: document.getElementById('re-upload'),
         navItems: document.querySelectorAll('.nav-item'),
         historySection: document.getElementById('history-section'),
-        historyContainer: document.getElementById('history-container')
+        historyContainer: document.getElementById('history-container'),
+        analysisSection: document.getElementById('analysis-section')
     };
 
     // Navigation Logic
@@ -47,24 +48,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 elements.uploadSection.classList.remove('hidden');
                 elements.dashboardSection.classList.add('hidden');
                 elements.historySection.classList.add('hidden');
+                elements.analysisSection.classList.add('hidden');
             } else if (targetId === 'nav-history') {
                 elements.uploadSection.classList.add('hidden');
                 elements.dashboardSection.classList.add('hidden');
+                elements.analysisSection.classList.add('hidden');
                 elements.historySection.classList.remove('hidden');
                 renderHistory();
-            } else if (targetId === 'nav-dashboard' || targetId === 'nav-analysis') {
+            } else if (targetId === 'nav-dashboard') {
                 if (state.results) {
                     elements.uploadSection.classList.add('hidden');
                     elements.historySection.classList.add('hidden');
+                    elements.analysisSection.classList.add('hidden');
                     elements.dashboardSection.classList.remove('hidden');
-
-                    // If analysis, scroll to it
-                    if (targetId === 'nav-analysis') {
-                        document.querySelector('.analysis-table-container').scrollIntoView({ behavior: 'smooth' });
-                    }
                 } else {
                     alert('Please upload your data or use demo data first!');
-                    // Revert active state to upload if no data
+                    elements.navItems.forEach(i => i.classList.remove('active'));
+                    document.getElementById('nav-upload').classList.add('active');
+                }
+            } else if (targetId === 'nav-analysis') {
+                if (state.results) {
+                    elements.uploadSection.classList.add('hidden');
+                    elements.historySection.classList.add('hidden');
+                    elements.dashboardSection.classList.add('hidden');
+                    elements.analysisSection.classList.remove('hidden');
+                } else {
+                    alert('Please upload your data or use demo data first!');
                     elements.navItems.forEach(i => i.classList.remove('active'));
                     document.getElementById('nav-upload').classList.add('active');
                 }
@@ -269,6 +278,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const result = history.find(r => r.id === id);
         if (result) {
             state.results = result;
+
+            // Re-render HTML details
+            elements.analysisBody.innerHTML = state.results.details.map(q => `
+                <tr>
+                    <td>${q.qNo}</td>
+                    <td>${q.subject}</td>
+                    <td><span class="status-tag ${q.status}">${q.status}</span></td>
+                    <td>${q.userAns || '-'}</td>
+                    <td>${q.correctAns}</td>
+                    <td style="color: ${q.points > 0 ? 'var(--accent-green)' : q.points < 0 ? 'var(--accent-red)' : 'var(--text-secondary)'}">${q.points > 0 ? '+' + q.points : q.points}</td>
+                </tr>
+            `).join('');
+
             showDashboard();
 
             // Adjust specific UI states that might rely on raw data maps
@@ -279,6 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function showDashboard() {
         elements.uploadSection.classList.add('hidden');
         elements.historySection.classList.add('hidden');
+        elements.analysisSection.classList.add('hidden');
         elements.dashboardSection.classList.remove('hidden');
 
         // Update nav state
