@@ -61,26 +61,27 @@
                     <div class="upload-card glass">
                         <div class="icon-box">📄</div>
                         <h3>Response Card</h3>
-                        <p>Upload your OMR response sheet (CSV or Text)</p>
+                        <p>Upload your OMR response sheet (JPG, PDF, CSV or Text)</p>
                         <div class="drop-zone" id="response-drop-zone">
                             <span>Drop file or click to browse</span>
-                            <input type="file" id="response-input" accept=".csv,.txt" hidden>
+                            <input type="file" id="response-input" accept=".csv,.txt,.jpg,.jpeg,.pdf" hidden>
                         </div>
                     </div>
                     <div class="upload-card glass">
                         <div class="icon-box">🔑</div>
                         <h3>Answer Key</h3>
-                        <p>Upload the official answer key (CSV or Text)</p>
+                        <p>Upload the official answer key (JPG, PDF, CSV or Text)</p>
                         <div class="drop-zone" id="answer-drop-zone">
                             <span>Drop file or click to browse</span>
-                            <input type="file" id="answer-input" accept=".csv,.txt" hidden>
+                            <input type="file" id="answer-input" accept=".csv,.txt,.jpg,.jpeg,.pdf" hidden>
                         </div>
                     </div>
                 </div>
                 <button id="calculate-btn" class="btn-primary" disabled>Calculate Score</button>
                 <div class="format-hint">
-                    <p><strong>Note:</strong> Files should be in CSV format with columns:
-                        <code>Question No, Answer</code>
+                    <p><strong>Note:</strong> We now support automatic OCR for <strong>JPG</strong> and
+                        <strong>PDF</strong> files!
+                        Alternatively, use CSV format with columns: <code>Question No, Answer</code>
                     </p>
                 </div>
             </section>

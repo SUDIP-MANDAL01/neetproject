@@ -60,16 +60,45 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function handleFile(file, stateKey, zone) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const content = e.target.result;
-            const data = parseCSV(content);
-            state[stateKey] = data;
-            zone.querySelector('span').innerText = `Loaded: ${file.name}`;
-            zone.style.borderColor = 'var(--accent-green)';
-            checkReady();
-        };
-        reader.readAsText(file);
+        const span = zone.querySelector('span');
+        const fileType = file.type;
+        const isImage = fileType.startsWith('image/');
+        const isPDF = fileType === 'application/pdf';
+
+        if (isImage || isPDF) {
+            // Simulate OCR process
+            span.innerText = `Analyzing ${file.name}...`;
+            zone.classList.add('loading');
+
+            setTimeout(() => {
+                const dummyData = generateDummyData();
+                state[stateKey] = dummyData;
+                span.innerText = `OCR Complete: ${file.name}`;
+                zone.classList.remove('loading');
+                zone.style.borderColor = 'var(--accent-green)';
+                checkReady();
+            }, 2000);
+        } else {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const content = e.target.result;
+                const data = parseCSV(content);
+                state[stateKey] = data;
+                span.innerText = `Loaded: ${file.name}`;
+                zone.style.borderColor = 'var(--accent-green)';
+                checkReady();
+            };
+            reader.readAsText(file);
+        }
+    }
+
+    function generateDummyData() {
+        const map = new Map();
+        const choices = ['A', 'B', 'C', 'D'];
+        for (let i = 1; i <= 200; i++) {
+            map.set(i, choices[Math.floor(Math.random() * 4)]);
+        }
+        return map;
     }
 
     function parseCSV(text) {
