@@ -36,6 +36,9 @@
                 <a href="#" class="nav-item" id="nav-analysis">
                     <span class="icon">🔬</span> Analysis
                 </a>
+                <a href="#" class="nav-item" id="nav-history">
+                    <span class="icon">🕒</span> Results
+                </a>
             </nav>
             <div class="sidebar-footer">
                 <div class="user-profile">
@@ -85,7 +88,8 @@
                 <div class="format-hint">
                     <p><strong>Note:</strong> We now support automatic OCR for <strong>JPG/JPEG</strong> and
                         <strong>PDF</strong> files! Alternatively, use CSV format with columns:
-                        <code>Question No, Answer</code></p>
+                        <code>Question No, Answer</code>
+                    </p>
                 </div>
             </section>
 
@@ -171,6 +175,17 @@
                             <!-- Populated by JS -->
                         </tbody>
                     </table>
+                </div>
+            </section>
+
+            <!-- History Section (Hidden initially) -->
+            <section id="history-section" class="section hidden">
+                <div class="section-header">
+                    <h2>Past Results</h2>
+                    <p>Your previously calculated scores and analysis.</p>
+                </div>
+                <div class="history-list glass" id="history-container">
+                    <!-- Populated by JS -->
                 </div>
             </section>
         </main>

@@ -27,7 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
         scoreBiology: document.getElementById('score-biology'),
         analysisBody: document.getElementById('analysis-body'),
         reUploadBtn: document.getElementById('re-upload'),
-        navItems: document.querySelectorAll('.nav-item')
+        navItems: document.querySelectorAll('.nav-item'),
+        historySection: document.getElementById('history-section'),
+        historyContainer: document.getElementById('history-container')
     };
 
     // Navigation Logic
@@ -44,9 +46,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (targetId === 'nav-upload') {
                 elements.uploadSection.classList.remove('hidden');
                 elements.dashboardSection.classList.add('hidden');
+                elements.historySection.classList.add('hidden');
+            } else if (targetId === 'nav-history') {
+                elements.uploadSection.classList.add('hidden');
+                elements.dashboardSection.classList.add('hidden');
+                elements.historySection.classList.remove('hidden');
+                renderHistory();
             } else if (targetId === 'nav-dashboard' || targetId === 'nav-analysis') {
                 if (state.results) {
                     elements.uploadSection.classList.add('hidden');
+                    elements.historySection.classList.add('hidden');
                     elements.dashboardSection.classList.remove('hidden');
 
                     // If analysis, scroll to it
@@ -211,6 +220,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         state.results = {
+            id: Date.now().toString(),
+            date: new Date().toLocaleString(),
             total,
             correctCount,
             incorrectCount,
@@ -219,10 +230,55 @@ document.addEventListener('DOMContentLoaded', () => {
             details,
             subjectStats
         };
+
+        saveResult(state.results);
     }
+
+    function saveResult(result) {
+        let history = JSON.parse(localStorage.getItem('neet_history') || '[]');
+        // Optional: limit history size to last 10
+        history.unshift(result);
+        if (history.length > 20) history = history.slice(0, 20);
+        localStorage.setItem('neet_history', JSON.stringify(history));
+    }
+
+    function renderHistory() {
+        const history = JSON.parse(localStorage.getItem('neet_history') || '[]');
+
+        if (history.length === 0) {
+            elements.historyContainer.innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 2rem;">No past results found.</p>';
+            return;
+        }
+
+        elements.historyContainer.innerHTML = history.map(item => `
+            <div class="history-item">
+                <div class="history-item-details">
+                    <span class="history-date">${item.date}</span>
+                    <div class="history-score">${item.total} <span>/ 720</span></div>
+                </div>
+                <div class="history-actions">
+                    <button class="btn-secondary" onclick="window.loadHistoricalResult('${item.id}')">View Details</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Expose method to global scope for the inline onclick handler
+    window.loadHistoricalResult = (id) => {
+        const history = JSON.parse(localStorage.getItem('neet_history') || '[]');
+        const result = history.find(r => r.id === id);
+        if (result) {
+            state.results = result;
+            showDashboard();
+
+            // Adjust specific UI states that might rely on raw data maps
+            // (Note: in a real app you might want to serialize the Maps as arrays if full replay is needed)
+        }
+    };
 
     function showDashboard() {
         elements.uploadSection.classList.add('hidden');
+        elements.historySection.classList.add('hidden');
         elements.dashboardSection.classList.remove('hidden');
 
         // Update nav state
